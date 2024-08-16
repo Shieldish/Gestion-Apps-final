@@ -1,4 +1,4 @@
-{
+ {
   "expo": {
     "name": "Gestion-Apps",
     "slug": "Gestion-Apps",
@@ -29,6 +29,9 @@
         "projectId": "919d631f-60ea-483b-a906-143829e9dfa3"
       }
     },
-    "owner": "shieldish3"
+    "owner": "shieldish3",
+    "plugins": [
+      "expo-build-properties"
+    ]
   }
 }
