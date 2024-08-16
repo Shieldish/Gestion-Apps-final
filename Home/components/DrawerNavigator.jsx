@@ -82,7 +82,7 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
               iconName = 'home';
               break;
             case 'Profiles':
-              iconName = 'address-card';
+              iconName = 'user-circle';
               break;
             case 'Settings':
               iconName = 'cog';
@@ -114,7 +114,7 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
       <Drawer.Screen
         name="Profiles"
         component={Profiles}
-        options={{ drawerLabel: 'Profil', headerTitle: 'Profil' }}
+        options={{ drawerLabel: 'Profiles', headerTitle: 'Profiles' }}
       />
       <Drawer.Screen
         name="Settings"

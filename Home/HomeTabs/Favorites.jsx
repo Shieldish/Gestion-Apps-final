@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { Divider } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { useFavorites } from '../../Partials/FavoritesContext';
-import BottomSheet from '../../Partials/BottomSheet'; 
+import BottomSheet from '../../Partials/BottomSheet';
+import { Divider } from 'react-native-elements';
 
 const Favorites = () => {
   const [favoriteJobs, setFavoriteJobs] = useState([]);
@@ -18,7 +18,7 @@ const Favorites = () => {
   const [appliedJobs, setAppliedJobs] = useState({});
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const [jobToDelete, setJobToDelete] = useState(null);
-  const [theMail, setEmail] = useState(null);
+  const [theMail,SetEmail]=useState(null)
 
   const checkAppliedStatus = async (email, jobId) => {
     try {
@@ -27,12 +27,17 @@ const Favorites = () => {
         params: { email, stageId: jobId },
         headers: { Authorization: `Bearer ${token}` },
       });
+
+     
       return response.data.exists;
     } catch (error) {
       console.error('Erreur lors de la vérification du statut de candidature:', error);
+
       return false;
     }
   };
+
+
 
   const handleDeletePress = (job) => {
     setJobToDelete(job);
@@ -61,7 +66,6 @@ const Favorites = () => {
       </Text>
     );
   };
-
   const fetchJobsByIds = async (ids) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
@@ -72,7 +76,7 @@ const Favorites = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      updateFavoritesCount(response.data?.length);
+      updateFavoritesCount(response.data?.length)
       return response.data;
     } catch (error) {
       console.error('Erreur lors de la récupération des postes par IDs:', error);
@@ -92,11 +96,12 @@ const Favorites = () => {
           // Check applied status for each job
           const Data = await AsyncStorage.getItem('userData');
           const data = JSON.parse(Data);
+        //  console.log("Data =", data.userData.EMAIL)
           const email = data.userData.EMAIL;
-          setEmail(email);
+          SetEmail(email)
           const appliedStatus = {};
           for (const job of favorites) {
-            appliedStatus[job.id] = await checkAppliedStatus(email, job.id);
+            appliedStatus[job.id] = await checkAppliedStatus( email, job.id);
           }
           setAppliedJobs(appliedStatus);
         } else {
@@ -131,8 +136,10 @@ const Favorites = () => {
       updateFavoritesCount(favoriteIds.length);
     } catch (error) {
       console.error('Erreur lors de la mise à jour des postes favoris:', error);
+
     }
   };
+
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -154,16 +161,17 @@ const Favorites = () => {
     );
   }
 
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Erreur lors du chargement des postes favoris : {error.message}</Text>
-        <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}>
-          <Text style={styles.refreshButtonText}>Rafraîchir</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+
+    if (error) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Erreur lors du chargement des postes favoris : {error.message}</Text>
+          <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}>
+            <Text style={styles.refreshButtonText}>Rafraîchir</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
 
   const renderJob = ({ item: job }) => (
     <View style={[
@@ -174,23 +182,39 @@ const Favorites = () => {
         style={styles.trashIcon}
         onPress={() => handleDeletePress(job)}
       >
-        <Ionicons name="trash-outline" size={24} color="red" />
+        <Ionicons name="trash-outline" size={24} color="#FF6B6B" />
       </TouchableOpacity>
       {appliedJobs[job.id] && (
-        <Text style={styles.appliedText}>Déjà Candidaté</Text>
+        <View style={styles.appliedBadge}>
+          <Text style={styles.appliedText}>Déjà Candidaté</Text>
+        
+        </View>
+       
+      
       )}
+      
       <Text style={styles.cardTitle}>{job.Titre}</Text>
       <Text style={styles.cardSubtitle}>{job.Libelle}</Text>
-      <Divider />
-      <Text style={styles.cardInfo2}>{job.Nom} - {job.Address}</Text>
-      <Divider />
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Experience:</Text> {job.Experience}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Niveau:</Text> {job.Niveau}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Postes Vacants:</Text> {job.PostesVacants}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Date Debut:</Text> {new Date(job.DateDebut).toLocaleDateString()}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Date Fin:</Text> {new Date(job.DateFin).toLocaleDateString()}</Text>
-      <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
-      <Divider />
+      
+      <View style={styles.companyInfo}>
+        <Ionicons name="business-outline" size={16} color="#4A90E2" />
+        <Text style={styles.cardInfo2}>{job.Nom} - {job.Address}</Text>
+      </View>
+      
+      <View style={styles.divider} />
+      
+      <InfoItem icon="briefcase-outline" label="Experience" value={job.Experience} />
+      <InfoItem icon="school-outline" label="Niveau" value={job.Niveau} />
+      <InfoItem icon="people-outline" label="Postes Vacants" value={job.PostesVacants} />
+      <InfoItem icon="calendar-outline" label="Date Debut" value={new Date(job.DateDebut).toLocaleDateString()} />
+      <InfoItem icon="calendar-outline" label="Date Fin" value={new Date(job.DateFin).toLocaleDateString()} />
+      
+      <Text style={styles.cardInfo3}>
+        Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+      </Text>
+      
+      <View style={styles.divider} />
+      
       <TouchableOpacity 
         style={[styles.button, appliedJobs[job.id] && styles.viewDetailsButton]}
         onPress={() => {
@@ -198,31 +222,64 @@ const Favorites = () => {
             navigation.navigate('MoreDetails', {
               stageId: job.id,
               etudiantEmail: theMail
-            });
+            })
           } else {
             navigation.navigate('Postulation', { stage: job });
           }
         }}
       >
         <Text style={styles.buttonText}>
-          {appliedJobs[job.id] ? 'Voir les détails de la candidature' : 'Postuler'}
+          {appliedJobs[job.id] ? 'Voir les détails' : 'Postuler'}
         </Text>
       </TouchableOpacity>
     </View>
   );
 
+  const InfoItem = ({ icon, label, value }) => (
+    <View style={styles.infoItem}>
+      <Ionicons name={icon} size={16} color="#4A90E2" />
+      <Text style={styles.infoLabel}>{label}:</Text>
+      <Text style={styles.infoValue}>{value}</Text>
+    </View>
+  );
+
   const renderHeader = () => (
-    <Text style={styles.header}>Postes Favoris</Text>
+   
+      <Text style={styles.header}>Postes Favoris</Text>
+   
   );
 
   const renderFooter = () => (
     <Text style={styles.footer}>Fin de la liste</Text>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#4A90E2" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color="#FF6B6B" />
+        <Text style={styles.errorText}>Erreur lors du chargement des postes favoris : {error.message}</Text>
+        <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}>
+          <Text style={styles.refreshButtonText}>Rafraîchir</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {favoriteJobs && Array.isArray(favoriteJobs) && favoriteJobs.length === 0 ? (
-        <Text style={styles.noFavoritesText}>Aucun poste favori pour l'instant</Text>
+        <View style={styles.noFavoritesContainer}>
+          <Ionicons name="heart-outline" size={64} color="#4A90E2" />
+          <Text style={styles.noFavoritesText}>Aucun poste favori pour l'instant</Text>
+        </View>
       ) : (
         <FlatList
           data={favoriteJobs}
@@ -232,10 +289,8 @@ const Favorites = () => {
           onRefresh={onRefresh}
           ListHeaderComponent={renderHeader}
           ListFooterComponent={renderFooter}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
-          onEndReachedThreshold={0.5}
+          contentContainerStyle={styles.listContainer}
         />
       )}
       <BottomSheet
@@ -244,129 +299,167 @@ const Favorites = () => {
         onConfirm={handleConfirmDelete}
         message={renderStyledMessage()}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
+  },
+  listContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  headerContainer: {
+    backgroundColor: '#4A90E2',
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 8,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   jobContainer: {
-    padding: 15,
-    marginBottom: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
   },
   appliedJobContainer: {
-    backgroundColor: '#e0f7fa',
+    borderColor: '#4CAF50',
+    borderWidth: 2,
   },
   trashIcon: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 12,
+    right: 12,
+    zIndex: 1,
+  },
+  appliedBadge: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
   },
   appliedText: {
-    color: 'green',
+    color: '#FFFFFF',
+    fontSize: 12,
     fontWeight: 'bold',
-    marginBottom: 5,
   },
   cardTitle: {
+    paddingTop:20,
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#333',
+    marginBottom: 4,
   },
   cardSubtitle: {
     fontSize: 16,
-    color: '#555',
-    marginBottom: 10,
+    color: '#666',
+    marginBottom: 8,
+  },
+  companyInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   cardInfo2: {
     fontSize: 14,
-    color: '#333',
-    marginBottom: 5,
+    color: '#4A90E2',
+    marginLeft: 8,
   },
-  cardInfo: {
-    fontSize: 14,
+  divider: {
+    height: 1,
+    backgroundColor: '#E0E0E0',
+    marginVertical: 12,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  infoLabel: {
+    fontWeight: 'bold',
+    marginLeft: 8,
+    marginRight: 4,
+    color: '#555',
+  },
+  infoValue: {
+    flex: 1,
     color: '#333',
   },
   cardInfo3: {
     fontSize: 12,
-    color: '#777',
-    marginTop: 5,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-  footer: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: '#aaa',
-    marginVertical: 10,
+    color: '#888',
+    fontStyle: 'italic',
+    marginTop: 8,
   },
   button: {
     backgroundColor: '#4A90E2',
-    padding: 10,
-    borderRadius: 5,
+    paddingVertical: 12,
+    borderRadius: 8,
     alignItems: 'center',
+    marginTop: 16,
   },
   viewDetailsButton: {
-    backgroundColor: '#e76f51',
+    backgroundColor: '#4CAF50',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#FFFFFF',
     fontWeight: 'bold',
-  },
-  noFavoritesText: {
     fontSize: 16,
+  },
+  footer: {
     textAlign: 'center',
-    marginTop: 20,
+    color: '#888',
+    marginTop: 16,
+    marginBottom: 32,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 16,
   },
   errorText: {
-    fontSize: 16,
-    color: 'red',
-    marginBottom: 10,
+    textAlign: 'center',
+    color: '#FF6B6B',
+    marginTop: 16,
+    marginBottom: 16,
   },
   refreshButton: {
-    padding: 10,
     backgroundColor: '#4A90E2',
-    borderRadius: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
   },
   refreshButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  messageText: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  highlightedText: {
-    fontSize: 16,
-  },
-  greenText: {
-    color: 'green',
-  },
-  blueText: {
-    color: 'blue',
-  },
-  boldText: {
+    color: '#FFFFFF',
     fontWeight: 'bold',
+  },
+  noFavoritesContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noFavoritesText: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 16,
   },
 });
 

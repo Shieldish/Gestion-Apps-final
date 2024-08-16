@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
     backgroundColor: '#F8F8F8', //
+    
   },
   cardTitle: {
     fontSize: 18,
@@ -275,16 +276,23 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   errorContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFE5E5',
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
+   
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   errorText: {
     color: '#FF6B6B',
     marginLeft: 8,
+    fontWeight: 'bold',
+    textAlign: 'center',
+
   },
   loaderContainer: {
     padding: 16,
