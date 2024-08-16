@@ -4,7 +4,7 @@
     "slug": "Gestion-Apps",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/out-2.png",
+    "icon": "./assets/untitled.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/add.png",

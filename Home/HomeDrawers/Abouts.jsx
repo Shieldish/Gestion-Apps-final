@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 20,
         color: '#333',
+        textAlign: 'center',
     },
     paragraph: {
         fontSize: 16,
