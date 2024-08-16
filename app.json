@@ -16,12 +16,19 @@
     },
     "android": {
       "adaptiveIcon": {
-         "foregroundImage": "./assets/out-1.png",
+        "foregroundImage": "./assets/out-1.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.shieldish3.GestionApps"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "919d631f-60ea-483b-a906-143829e9dfa3"
+      }
+    },
+    "owner": "shieldish3"
   }
 }
