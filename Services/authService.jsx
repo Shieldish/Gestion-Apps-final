@@ -6,7 +6,7 @@ export const logout = async (navigation) => {
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('userData');
     await AsyncStorage.removeItem('hasSeenOnboarding'); 
-     await AsyncStorage.clear(); 
+   //  await AsyncStorage.clear(); 
     navigation.reset({
       index: 0,
       routes: [{ name: 'Login' }],
