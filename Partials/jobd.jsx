@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity,Platform ,TextInput, Animated, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, TextInput, Animated, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -49,24 +49,40 @@ const JobCard = React.memo(({ job, onToggleFavorite }) => {
   return (
     <View style={styles.card}>
       <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
-        <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? 'red' : 'black'} />
+        <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? '#FF6B6B' : '#4A4A4A'} />
       </TouchableOpacity>
       <Text style={styles.cardTitle}>{job.Titre}</Text>
       <Text style={styles.cardSubtitle}>{job.Libelle}</Text>
-      <Text style={styles.cardInfo2}>{job.Nom} - {job.Address}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Experience:</Text> {job.Experience}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Niveau:</Text> {job.Niveau}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Postes Vacants:</Text> {job.PostesVacants}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Date Debut:</Text> {new Date(job.DateDebut).toLocaleDateString()}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Date Fin:</Text> {new Date(job.DateFin).toLocaleDateString()}</Text>
-      <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
+      <Text style={styles.cardInfo2}>
+        <Ionicons name="business-outline" size={16} color="#4A90E2" /> {job.Nom} - {job.Address}
+      </Text>
+      <View style={styles.infoRow}>
+        <InfoItem icon="briefcase-outline" label="Experience" value={job.Experience} />
+        <InfoItem icon="school-outline" label="Niveau" value={job.Niveau} />
+      </View>
+      <View style={styles.infoRow}>
+        <InfoItem icon="people-outline" label="Postes Vacants" value={job.PostesVacants.toString()} />
+        <InfoItem icon="calendar-outline" label="Date Debut" value={new Date(job.DateDebut).toLocaleDateString()} />
+      </View>
+      <InfoItem icon="calendar-outline" label="Date Fin" value={new Date(job.DateFin).toLocaleDateString()} />
+      <Text style={styles.cardInfo3}>
+        <Ionicons name="time-outline" size={16} color="#4A90E2" /> Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+      </Text>
       <Divider />
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Postulation', { stage: job })}>
-        <Text style={styles.buttonText}>Voire plus de Detailes</Text>
+        <Text style={styles.buttonText}>Voir plus de détails</Text>
       </TouchableOpacity>
     </View>
   );
 });
+
+const InfoItem = ({ icon, label, value }) => (
+  <View style={styles.infoItem}>
+    <Ionicons name={icon} size={16} color="#4A90E2" />
+    <Text style={styles.infoLabel}>{label}: </Text>
+    <Text style={styles.infoValue}>{value}</Text>
+  </View>
+);
 
 const JobListings = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -232,158 +248,117 @@ const JobListings = ({ data }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
   },
   searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    backgroundColor: '#FFFFFF',
+    padding: 10,
     margin: 10,
-    paddingHorizontal: 10,
     borderRadius: 5,
-    backgroundColor: 'white',
-  },
-  noDataContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f0f0f0',
-  },
-  notFoundText: {
-    fontSize: 18,
-    color: '#666',
-    fontWeight: 'bold',
-  },
-  domaineContainer: {
-    marginBottom: 30,
-    paddingHorizontal: 20,
-  },
-  domaineTitle: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#cccaaa',
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 10,
-    marginVertical: 10,
-    width: 280,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
-    borderColor: '#ccc',
-    borderWidth: 1,
-  },
-  cardTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop:20,
-    color: '#2c3e50',
-    textAlign:'center',
-    textTransform:'uppercase',
-  },
-  cardSubtitle: {
-    fontSize: 18,
-    color:'#666',
-    marginBottom: 12,
-    textAlign:'center',
-    textTransform:'uppercase',
-  },
-  cardInfo: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#7f8c8d',
-  },
-  cardInfo2: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#007bff',
-    fontWeight: 'bold',
-    textTransform:'uppercase',
-  },
-  cardInfo3: {
-    fontSize: 14,
-    color: '#ccc',
-    marginTop: 5,
-    marginBottom: 10,
-    textAlign: 'right',
-  },
-  bold: {
-    fontWeight: 'bold',
-    color: '#2c3e50',
-  },
-  button: {
-    backgroundColor: "#4A90E2",
-    padding: 14,
-    borderRadius: 8,
-    marginTop: 20,
-    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 15,
+    margin: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  buttonText: {
-    color: 'white',
+  favoriteButton: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    zIndex: 1,
+  },
+  cardTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#4A4A4A',
+    marginBottom: 5,
+  },
+  cardSubtitle: {
     fontSize: 16,
+    color: '#4A90E2',
+    marginBottom: 10,
   },
-  divider: {
-    marginVertical: 10,
-    paddingTop:10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 1,
+  cardInfo2: {
+    fontSize: 14,
+    color: '#4A4A4A',
+    marginBottom: 10,
   },
-  filterTab: {
+  infoRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    marginBottom: 5,
   },
-  filterButton: {
+  infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    borderRadius: 20,
+    marginBottom: 5,
   },
-  activeFilter: {
-    backgroundColor: '#e6f0ff',
-  },
-  filterText: {
+  infoLabel: {
+    fontSize: 14,
+    color: '#4A4A4A',
     marginLeft: 5,
-    fontSize: 16,
-    color: '#7f8c8d',
   },
-  activeFilterText: {
-    color:"#4A90E2",
+  infoValue: {
+    fontSize: 14,
+    color: '#4A4A4A',
+    fontWeight: '500',
+  },
+  cardInfo3: {
+    fontSize: 12,
+    color: '#4A4A4A',
+    marginTop: 10,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E0E0E0',
+    marginVertical: 10,
+  },
+  button: {
+    backgroundColor: '#4A90E2',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
     fontWeight: 'bold',
   },
+  domaineContainer: {
+    marginBottom: 20,
+  },
+  domaineTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4A4A4A',
+    marginLeft: 10,
+    marginBottom: 10,
+  },
   accordion: {
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    backgroundColor: '#FFFFFF',
+    margin: 10,
+    borderRadius: 5,
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: 10,
+    backgroundColor: '#F0F0F0',
   },
   headerText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    color:"#4A90E2",
+    color: '#4A4A4A',
   },
   body: {
     overflow: 'hidden',
@@ -391,18 +366,29 @@ const styles = StyleSheet.create({
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    padding: 10,
+  },
+  filterText: {
+    marginLeft: 10,
+    color: '#4A4A4A',
   },
   activeFilter: {
-    backgroundColor: '#e6f0ff',
+    backgroundColor: '#E6F0FF',
   },
-  favoriteButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
+  activeFilterText: {
+    color: '#4A90E2',
+    fontWeight: 'bold',
   },
- 
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notFoundText: {
+    fontSize: 16,
+    color: '#4A4A4A',
+  },
 });
 
 export default JobListings;
+

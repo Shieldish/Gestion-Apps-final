@@ -108,7 +108,7 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
         component={HomeTabs}
         options={{
           drawerLabel: 'Accueil',
-          headerTitle: 'Gestion de Stages',
+          headerTitle: 'Gestion des Stages',
         }}
       />
       <Drawer.Screen
