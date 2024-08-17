@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, SafeAreaView ,StatusBar} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -156,6 +156,7 @@ const Favorites = () => {
   if (loading) {
     return (
       <View style={styles.container}>
+           <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
         <ActivityIndicator size="large" color="#4A90E2" />
       </View>
     );
@@ -256,6 +257,7 @@ const Favorites = () => {
   if (loading) {
     return (
       <View style={styles.container}>
+           <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
         <ActivityIndicator size="large" color="#4A90E2" />
       </View>
     );
@@ -275,6 +277,7 @@ const Favorites = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+         <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
       {favoriteJobs && Array.isArray(favoriteJobs) && favoriteJobs.length === 0 ? (
         <View style={styles.noFavoritesContainer}>
           <Ionicons name="heart-outline" size={64} color="#4A90E2" />

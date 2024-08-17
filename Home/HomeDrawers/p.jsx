@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ProfileScreen = () => {
   const [userData, setUserData] = useState(null);
@@ -19,6 +19,7 @@ const ProfileScreen = () => {
         console.error('Failed to load user data:', error);
       }
     };
+
     fetchUserData();
   }, []);
 
@@ -44,33 +45,39 @@ const ProfileScreen = () => {
         />
         <Text style={styles.name}>{`${PRENOM} ${NOM}`}</Text>
       </View>
-      <View style={styles.infoSection}>
-        <InfoItem icon="id-card" title="ID" info={UUID} />
-        <InfoItem icon="envelope" title="Email" info={EMAIL} />
-        <InfoItem icon="building" title="Department" info={DEPARTEMENT} />
-        <InfoItem icon="calendar-plus" title="Account created at" info={new Date(createdAt).toLocaleString('fr-FR')} />
-        <InfoItem icon="calendar-check" title="Account last updated" info={new Date(updatedAt).toLocaleString('fr-FR')} />
+      <View style={styles.infoContainer}>
+        <Icon name="id-card" size={20} style={styles.icon} />
+        <Text style={styles.infoTitle}>ID</Text>
+        <Text style={styles.info}>{UUID}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Icon name="envelope" size={20} style={styles.icon} />
+        <Text style={styles.infoTitle}>Email</Text>
+        <Text style={styles.info}>{EMAIL}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Icon name="building" size={20} style={styles.icon} />
+        <Text style={styles.infoTitle}>Department</Text>
+        <Text style={styles.info}>{DEPARTEMENT}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Icon name="calendar" size={20} style={styles.icon} />
+        <Text style={styles.infoTitle}>Account created at</Text>
+        <Text style={styles.info}>{new Date(createdAt).toLocaleString('fr-FR')}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Icon name="refresh" size={20} style={styles.icon} />
+        <Text style={styles.infoTitle}>Account last updated</Text>
+        <Text style={styles.info}>{new Date(updatedAt).toLocaleString('fr-FR')}</Text>
       </View>
     </ScrollView>
   );
 };
 
-const InfoItem = ({ icon, title, info }) => (
-  <View style={styles.infoContainer}>
-    <View style={styles.iconContainer}>
-      <Icon name={icon} size={20} color="#4A90E2" />
-    </View>
-    <View style={styles.textContainer}>
-      <Text style={styles.infoTitle}>{title}</Text>
-      <Text style={styles.info}>{info}</Text>
-    </View>
-  </View>
-);
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
   },
   loadingContainer: {
     flex: 1,
@@ -79,8 +86,9 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    padding: 20,
     backgroundColor: '#4A90E2',
+    paddingVertical: 20,
+    marginBottom: 20,
   },
   avatar: {
     width: 100,
@@ -91,40 +99,29 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
-  },
-  infoSection: {
-    padding: 20,
+    color: '#FFF',
   },
   infoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 10,
     padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
   },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#e1e8fd',
-    borderRadius: 20,
-    marginRight: 15,
-  },
-  textContainer: {
-    flex: 1,
+  icon: {
+    marginRight: 10,
+    color: '#4A90E2',
   },
   infoTitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 5,
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+    flex: 1,
   },
   info: {
     fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
+    color: '#555',
+    textAlign: 'right',
   },
 });
 

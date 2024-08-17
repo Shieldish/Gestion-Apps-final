@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, RefreshControl , StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,6 +17,7 @@ const Stages = () => {
     totalItems: 0,
   });
   const [searchError, setSearchError] = useState(false);
+  const [error, setError] = useState(null);
   const navigation = useNavigation();
   const isFetching = useRef(false);
 
@@ -27,6 +28,7 @@ const Stages = () => {
   const fetchStages = async () => {
     try {
       setLoading(true);
+      setError(null);
       const token = await AsyncStorage.getItem('userToken');
 
       if (!token) {
@@ -68,14 +70,7 @@ const Stages = () => {
         errorMessage = 'Aucune réponse du serveur. Veuillez vérifier votre connexion Internet.';
       }
 
-      Alert.alert(
-        'Erreur de récupération des données',
-        errorMessage,
-        [
-          { text: 'Annuler', onPress: () => console.log('Annuler pressé'), style: 'cancel' },
-          { text: 'Réessayer', onPress: fetchStages },
-        ]
-      );
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -176,8 +171,18 @@ const Stages = () => {
     </View>
   );
 
+  const renderErrorContainer = () => (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorText}>{error}</Text>
+      <TouchableOpacity style={styles.retryButton} onPress={fetchStages}>
+        <Text style={styles.retryButtonText}>Réessayer</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
+         <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
       <TextInput
         style={styles.searchInput}
         placeholder="Rechercher..."
@@ -187,22 +192,27 @@ const Stages = () => {
 
       {loading && !refreshing ? (
         <ActivityIndicator size="large" color="#4A90E2" />
+      ) : error ? (
+        renderErrorContainer()
+      ) : stages.length === 0 ? (
+        searchError ? renderEmptySearch() : null
       ) : (
-        stages.length === 0 ? (
-          searchError ? renderEmptySearch() : null
-        ) : (
-          <FlatList
-            data={stages}
-            renderItem={renderStageItem}
-            keyExtractor={(item) => item.id.toString()}
-            ListHeaderComponent={renderHeader}
-            ListFooterComponent={renderFooter}
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            contentContainerStyle={{ paddingBottom: 20 }}
-            showsVerticalScrollIndicator={false}
-          />
-        )
+        <FlatList
+          data={stages}
+          renderItem={renderStageItem}
+          keyExtractor={(item) => item.id.toString()}
+          ListHeaderComponent={renderHeader}
+          ListFooterComponent={renderFooter}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={["#4A90E2"]}
+            />
+          }
+          contentContainerStyle={{ paddingBottom: 20 }}
+          showsVerticalScrollIndicator={false}
+        />
       )}
 
       <View style={styles.paginationContainer}>
@@ -226,6 +236,7 @@ const Stages = () => {
   );
 };
 
+// Add these styles to your existing styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -326,31 +337,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-
-    marginTop: 20,
-    
+    marginVertical: 20,
   },
   paginationButton: {
-    backgroundColor:"#4A90E2",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 800,
-    marginHorizontal: 8,
-    marginBottom:10,
+    padding: 10,
+    backgroundColor: '#4A90E2',
+    borderRadius: 5,
+    marginHorizontal: 10,
   },
   paginationButtonText: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#FFF',
   },
   paginationText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color:"#4A90E2",
-    
-
+    color: '#333',
   },
-
+    
   jobTitle: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -408,8 +411,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-
+errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   
+    borderRadius: 10, // Rounded corners
+    margin: 20, // Margin around the error container
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#D8000C', // Red color for error text
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom:20
+  },
+  retryButton: {
+    backgroundColor: '#4A90E2',
+    padding: 10,
+    borderRadius: 5,
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
 });
 
 export default Stages;

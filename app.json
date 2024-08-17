@@ -16,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/out-1.png",
+        "foregroundImage": "./assets/untitled.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.shieldish3.GestionApps"

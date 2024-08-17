@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, RefreshControl, ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, RefreshControl, ScrollView, View, Text, ActivityIndicator,StatusBar } from 'react-native';
 import JobListings from '../../Partials/JobListings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -25,11 +25,16 @@ const App = () => {
         },
       });
 
-      setJobData(response.data.stages);
-      setError('');
+      if (response.data.stages && response.data.stages.length > 0) {
+        setJobData(response.data.stages);
+        setError('');
+      } else {
+        setJobData([]);
+        setError("Aucune offre d'emploi disponible.");
+      }
     } catch (error) {
       console.error('Erreur lors de la récupération des données:', error);
-      setError('Échec de la récupération des données. Veuillez vérifier votre connexion réseau  . ' + error.message);
+      setError('Échec de la récupération des données. Veuillez vérifier votre connexion réseau. ' + error.message);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -47,6 +52,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+         <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {loading ? (
           <View style={styles.loaderContainer}>
@@ -54,9 +60,9 @@ const App = () => {
           </View>
         ) : error ? (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>2
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-        ) : !jobData ? (
+        ) : jobData.length === 0 ? (
           <View style={styles.noDataContainer}>
             <Text style={styles.noDataText}>Aucune offre d'emploi disponible.</Text>
           </View>
