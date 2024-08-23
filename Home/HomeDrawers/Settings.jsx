@@ -25,6 +25,7 @@ const ProfileEditScreen = () => {
   const [showPassword2, setShowPassword2] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -99,7 +100,7 @@ const ProfileEditScreen = () => {
     setErrors(errors);
     return valid;
   };
-
+/* 
   const handleSubmit = async () => {
     if (!validateForm() || !isCheckboxChecked) {
       if (!isCheckboxChecked) {
@@ -121,6 +122,32 @@ const ProfileEditScreen = () => {
       }
     } catch (error) {
       Alert.alert('Erreur', 'Une erreur s\'est produite lors de la mise à jour du profil');
+    }
+  }; */
+
+  const handleSubmit = async () => {
+    if (!validateForm() || !isCheckboxChecked) {
+      if (!isCheckboxChecked) {
+        setErrors(prevErrors => ({ ...prevErrors, checkbox: 'Vous devez accepter les termes et conditions' }));
+      }
+      return;
+    }
+  
+    setIsLoading(true);  // Set loading to true when submission starts
+  
+    try {
+      const response = await axios.post(`${process.env.BACKEND_URL}/settings/updateUserData2`, userData);
+  
+      if (response.data.success) {
+        console.log('Profile updated successfully');
+        Alert.alert('Succès', 'Profil mis à jour avec succès');
+      } else {
+        Alert.alert('Erreur', 'Échec de la mise à jour du profil');
+      }
+    } catch (error) {
+      Alert.alert('Erreur', 'Une erreur s\'est produite lors de la mise à jour du profil');
+    } finally {
+      setIsLoading(false);  // Set loading to false when submission ends
     }
   };
 
@@ -311,9 +338,20 @@ const ProfileEditScreen = () => {
           {errors.checkbox && <Text style={styles.error}>{errors.checkbox}</Text>}
 
           {/* Submit Button */}
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+     {/*      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Mettre à jour le profil</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+                              <TouchableOpacity 
+  style={[styles.submitButton, isLoading && styles.submitButtonDisabled]} 
+  onPress={handleSubmit}
+  disabled={isLoading}
+>
+  {isLoading ? (
+    <ActivityIndicator size="small" color="#ffffff" />
+  ) : (
+    <Text style={styles.submitButtonText}>Mettre à jour le profil</Text>
+  )}
+</TouchableOpacity>
         </View>
       </ScrollView>
     </ScrollView>
@@ -402,6 +440,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+   submitButtonDisabled: {
+    backgroundColor: '#a0c4e8',  // A lighter shade of blue
+  },
 });
+
 
 export default ProfileEditScreen;
