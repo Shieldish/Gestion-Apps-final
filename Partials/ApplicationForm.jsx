@@ -396,12 +396,45 @@ const ApplicationForm = ({ route, navigation }) => {
             />
           )}
 
-          <TextInput
+          {/* <TextInput
             style={styles.input}
             placeholder="Adresse"
             value={formData.adresse}
             onChangeText={(value) => handleInputChange('adresse', value)}
-          />
+          /> */}
+
+<Picker
+  selectedValue={formData.adresse}
+  style={styles.picker}
+  onValueChange={(value) => handleInputChange('adresse', value)}
+>
+  <Picker.Item label="Veuillez sélectionner votre adresse" value="" />
+  <Picker.Item label="Tunis, Tunisie" value="Tunis, Tunisie" />
+  <Picker.Item label="Ariana, Tunisie" value="Ariana, Tunisie" />
+  <Picker.Item label="Ben Arous, Tunisie" value="Ben Arous, Tunisie" />
+  <Picker.Item label="Manouba, Tunisie" value="Manouba, Tunisie" />
+  <Picker.Item label="Nabeul, Tunisie" value="Nabeul, Tunisie" />
+  <Picker.Item label="Zaghouan, Tunisie" value="Zaghouan, Tunisie" />
+  <Picker.Item label="Bizerte, Tunisie" value="Bizerte, Tunisie" />
+  <Picker.Item label="Béja, Tunisie" value="Béja, Tunisie" />
+  <Picker.Item label="Jendouba, Tunisie" value="Jendouba, Tunisie" />
+  <Picker.Item label="Kef, Tunisie" value="Kef, Tunisie" />
+  <Picker.Item label="Siliana, Tunisie" value="Siliana, Tunisie" />
+  <Picker.Item label="Kairouan, Tunisie" value="Kairouan, Tunisie" />
+  <Picker.Item label="Kasserine, Tunisie" value="Kasserine, Tunisie" />
+  <Picker.Item label="Sidi Bouzid, Tunisie" value="Sidi Bouzid, Tunisie" />
+  <Picker.Item label="Sousse, Tunisie" value="Sousse, Tunisie" />
+  <Picker.Item label="Monastir, Tunisie" value="Monastir, Tunisie" />
+  <Picker.Item label="Mahdia, Tunisie" value="Mahdia, Tunisie" />
+  <Picker.Item label="Sfax, Tunisie" value="Sfax, Tunisie" />
+  <Picker.Item label="Gafsa, Tunisie" value="Gafsa, Tunisie" />
+  <Picker.Item label="Tozeur, Tunisie" value="Tozeur, Tunisie" />
+  <Picker.Item label="Kebili, Tunisie" value="Kebili, Tunisie" />
+  <Picker.Item label="Gabès, Tunisie" value="Gabès, Tunisie" />
+  <Picker.Item label="Medenine, Tunisie" value="Medenine, Tunisie" />
+  <Picker.Item label="Tataouine, Tunisie" value="Tataouine, Tunisie" />
+</Picker>
+
           {errors.adresse && <Text style={styles.errorText}>{errors.adresse}</Text>}
           <TextInput
             style={styles.input}
@@ -720,6 +753,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  picker: {
+    height: 50,
+    width: '100%',
+    backgroundColor: '#f0f0f0', // Light grey background
+    borderColor: '#ccc',         // Light grey border
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 10,           // Add padding at the bottom
+    color: '#333',               // Dark grey text color
+  },    // Dark grey text color
 });
 
 export default ApplicationForm;
