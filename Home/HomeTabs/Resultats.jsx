@@ -9,8 +9,7 @@ const Resultats = () => {
   return (
     <View style={globalStyles.container}>
          <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
-      <Text style={globalStyles.text}>This is an example text</Text>
-      <Button title="Toggle Dark Mode" onPress={toggleTheme} />
+         <Text style={globalStyles.text}>la partie resultat n'est pas encore implémentée</Text>
     </View>
   );
 };

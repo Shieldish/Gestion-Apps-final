@@ -28,7 +28,7 @@
     "@rneui/themed": "4.0.0-rc.8",
     "axios": "^1.7.4",
     "check": "^1.0.0",
-    "expo": "~51.0.28",
+    "expo": "~51.0.31",
     "expo-build-properties": "~0.12.5",
     "expo-document-picker": "~12.0.2",
     "expo-file-system": "^17.0.1",
